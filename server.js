@@ -4,7 +4,6 @@ const app = express()
 const logger = require("logger")
 const cors = require("cors")
 const Data = require("./model/data")
-const data = require("./model/data")
 
 app.use(cors())
 
@@ -15,7 +14,7 @@ app.get("/api/hello",(req,res)=>{
 })
 
 app.get("/api/find",(req,res)=>{
-    Data.findOne().then((result)=>{
+    Data.find().then((result)=>{
         console.log(result)
         res.send(result)
     })

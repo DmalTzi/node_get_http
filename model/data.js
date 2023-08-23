@@ -9,7 +9,7 @@ mongoose.connect(`mongodb+srv://hdrproject:50230@cluster0.ktm1unb.mongodb.net/?r
 mongoose.set('strictQuery', true);
 
 
-const dataSchema =mongoose.Schema({
+const dataSchema = mongoose.Schema({
     userId:String,
     TeacherUser:String,
     TeacherName:String,
@@ -36,4 +36,6 @@ const dataSchema =mongoose.Schema({
     },
 })
 
-module.exports = mongoose.model('wtf', dataSchema)
+let Data = mongoose.model("wtf",dataSchema)
+
+module.exports = Data
