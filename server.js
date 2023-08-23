@@ -1,7 +1,6 @@
-const PORT =  3000
+const PORT =  12123
 const express = require("express")
 const app = express()
-const logger = require("logger")
 const cors = require("cors")
 const Data = require("./model/data")
 
@@ -14,8 +13,8 @@ app.get("/api/hello",(req,res)=>{
 })
 
 app.get("/api/find",(req,res)=>{
-    Data.find().then((result)=>{
-        console.log(result)
+    Data.findOne().then((result)=>{
+        console.log(new Date())
         res.send(result)
     })
     // console.log(data)
