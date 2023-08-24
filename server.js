@@ -1,31 +1,64 @@
-const PORT =  3000
+const PORT =  4000
 const express = require("express")
 const app = express()
-const logger = require("logger")
 const cors = require("cors")
 const Data = require("./model/data")
 
 app.use(cors())
+app.use(express.json())
 
-app.get("/api/hello",(req,res)=>{
-    res.json({
-        data: "world"
+app.post("/api/find/serial",(req,res)=>{
+    const serial = req.body.serial
+    console.log(JSON.stringify({DateAndTime : new Date().toLocaleString(), api:"/api/find/serial"}))
+    Data.findOne({"Detail.Serial":serial}).then((data)=>{
+        if(data){
+            const raw_sendby = data.Detail.SendBy
+            const raw_sendstatus = data.Detail.SendStatus
+            const raw_symptom = data.Symptom
+            
+            let symptom = (raw_symptom == "มีไข้" || raw_symptom == "ปวดหัว") ? 0 : (raw_symptom == "ปวดประจำเดือน") ? 1 : (raw_symptom == "ท้องเสีย") ? 2 : (raw_symptom == "ลมพิษ/แพ้") ? 3 : "404";
+            let sendby = (raw_sendby == "อนุมัติโดยระบบ" || raw_sendby == "อนุมัติโดยครู") ? 1 : 0;
+            let sendstatus = (!raw_sendstatus) ? 0 : 1; 
+        
+            console.log(JSON.stringify({symptom:symptom, sendby:sendby, sendstatus:sendstatus}))
+        
+            box_data = {
+                symptom : symptom,
+                sendby : sendby,
+                sendstatus : sendstatus
+            }
+        
+            res.json(box_data)
+        }
+        else{
+            res.status(400)
+            res.json({Error : "notfound"})
+        }
     })
+    
+    
 })
 
-app.post("/api/find",(req,res)=>{
-    try {
-        const { key, value } = req.body;
-
-        // Fetch data from MongoDB to respond back
-        const fetchedData = Data.find().sort({ _id: -1 }).limit(1);
-
-        // Respond with fetched data
-        res.status(200).json(fetchedData);
-    } catch (error) {
-        console.error('Error handling data:', error);
-        res.status(500).json({ message: 'Error handling data' });
-    }
+app.post("/api/find/update", (req,res)=>{
+    const serial = req.body.serial
+    Data.findOne({"Detail.Serial":serial}).then((result)=>{
+        let data = {
+            Detail:{
+                UserBy:result.Detail.UserBy,
+                Serial:result.Detail.Serial,
+                SendBy:result.Detail.SendBy,
+                SendStatus : true,
+                Time:result.Detail.Time,
+                date:result.Detail.date
+            }
+        }
+        Data.findOneAndUpdate({"Detail.Serial":serial}, data).exec(err=>{
+            res.json({
+                code : "Success"
+            })
+        })
+    })
+    
 })
 
 app.listen(PORT,()=>{

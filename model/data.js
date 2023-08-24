@@ -6,7 +6,6 @@ mongoose.connect(`mongodb+srv://hdrproject:50230@cluster0.ktm1unb.mongodb.net/?r
     useFindAndModify: false,
 }).catch(err=>console.log(err))
 
-mongoose.set('strictQuery', true);
 
 
 const dataSchema = mongoose.Schema({
