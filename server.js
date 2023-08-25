@@ -17,7 +17,7 @@ app.post("/api/find/serial",(req,res)=>{
             const raw_symptom = data.Symptom
             
             let symptom = (raw_symptom == "มีไข้" || raw_symptom == "ปวดหัว") ? 0 : (raw_symptom == "ปวดประจำเดือน") ? 1 : (raw_symptom == "ท้องเสีย") ? 2 : (raw_symptom == "ลมพิษ/แพ้") ? 3 : "404";
-            let sendby = (raw_sendby == "อนุมัติโดยระบบ" || raw_sendby == "อนุมัติโดยครู") ? 1 : 0;
+            let sendby = (raw_sendby == "อนุมัติโดยระบบ" || raw_sendby == "อนุมัติโดยครู") ? 1 : (raw_sendby == "ไม่อนุมัติ") ? 2 : 0;
             let sendstatus = (!raw_sendstatus) ? 0 : 1; 
         
             console.log(JSON.stringify({symptom:symptom, sendby:sendby, sendstatus:sendstatus}))
